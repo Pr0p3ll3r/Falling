@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class ObstacleSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject obstaclePrefab;
     private float timer;
     [SerializeField] private float timeToSpawn = 5f;
     [SerializeField] private float maxLeft;
     [SerializeField] private float maxRight;
+    private ObjectPooler pooler;
 
     void Start()
     {
+        pooler = GetComponent<ObjectPooler>();
         SpawnObstacle();
     }
 
@@ -25,12 +26,15 @@ public class ObstacleSpawner : MonoBehaviour
         {
             timer -= Time.deltaTime;
         }
+
+        if(timeToSpawn > 0.5f) timeToSpawn -= Time.deltaTime * 0.1f;
     }  
     
     void SpawnObstacle()
     {
-        GameObject newObstacle = Instantiate(obstaclePrefab);
+        GameObject newObstacle = pooler.GetObject();
         newObstacle.transform.position = transform.position + new Vector3(Random.Range(maxLeft, maxRight), -7, 0);
+        newObstacle.SetActive(true);
         timer = timeToSpawn;
     }
 }
