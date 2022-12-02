@@ -9,11 +9,19 @@ public class ObstacleSpawner : MonoBehaviour
     [SerializeField] private float maxLeft;
     [SerializeField] private float maxRight;
     private ObjectPooler pooler;
+    private float timeToSpawnBase;
+
+    private void OnEnable()
+    {
+        Obstacle.OnGameOver += StopSpawning;
+        GameManager.OnStartGame += StartSpawning;
+    }
 
     void Start()
     {
+        timeToSpawnBase = timeToSpawn;
         pooler = GetComponent<ObjectPooler>();
-        SpawnObstacle();
+        enabled = false;
     }
 
     void Update()
@@ -26,8 +34,6 @@ public class ObstacleSpawner : MonoBehaviour
         {
             timer -= Time.deltaTime;
         }
-
-        if(timeToSpawn > 0.5f) timeToSpawn -= Time.deltaTime * 0.1f;
     }  
     
     void SpawnObstacle()
@@ -35,6 +41,19 @@ public class ObstacleSpawner : MonoBehaviour
         GameObject newObstacle = pooler.GetObject();
         newObstacle.transform.position = transform.position + new Vector3(Random.Range(maxLeft, maxRight), -7, 0);
         newObstacle.SetActive(true);
+        if(timeToSpawn > 0.2f) timeToSpawn -= 0.2f;
+        timer = timeToSpawn; 
+    }
+
+    void StartSpawning()
+    {
+        timeToSpawn = timeToSpawnBase;
         timer = timeToSpawn;
+        enabled = true;
+    }
+
+    void StopSpawning()
+    {
+        enabled = false;
     }
 }

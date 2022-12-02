@@ -5,7 +5,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     private Rigidbody rb;
-    private bool gyroEnabled;
     private float dirX;
     [SerializeField] private float moveSpeed = 10f;
 
@@ -16,15 +15,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if(SystemInfo.supportsGyroscope)
-        {
-            dirX = Input.acceleration.x * moveSpeed;
-        }
-        else
-        {
-            dirX = Input.GetAxis("Horizontal") * moveSpeed;
-        }
-
+#if !UNITY_ANDROID
+        dirX = Input.GetAxis("Horizontal") * moveSpeed;
+#else
+        dirX = Input.acceleration.x * moveSpeed;
+#endif     
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -2.7f, 2.7f), transform.position.y, 0);
     }
 

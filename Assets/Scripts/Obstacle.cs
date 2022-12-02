@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Obstacle : MonoBehaviour, IPooledObject
 {
+    public static event Action OnGameOver;
+
     [SerializeField] private float moveSpeed;
 
     public ObjectPooler Pool { get; set; }
@@ -19,6 +22,7 @@ public class Obstacle : MonoBehaviour, IPooledObject
 
     private void OnTriggerEnter(Collider other)
     {
-        SceneManager.LoadScene(0);
+        //SceneManager.LoadScene(0);
+        OnGameOver?.Invoke();
     }
 }
